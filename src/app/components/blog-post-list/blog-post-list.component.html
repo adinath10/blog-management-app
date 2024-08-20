@@ -1,0 +1,83 @@
+<div class="container mt-4">
+  <h1 class="mb-4">Blog Posts</h1>
+
+  <div class="d-flex justify-content-between mb-3">
+    <a [routerLink]="['/add']" class="btn btn-success">Add New Blog Post</a>
+
+    <div class="d-flex align-items-center">
+      <label for="sortBy" class="me-2 mb-0">Sort By:</label>
+      <select id="sortBy" (change)="onSortSelectChange($event)" class="form-select me-2">
+        <option value="id">ID</option>
+        <option value="username">Username</option>
+        <option value="dateCreated">Date Created</option>
+      </select>
+
+      <span class="sort-icons">
+        <!-- Sort Buttons -->
+        <button *ngIf="sortBy === 'id'" (click)="toggleSortOrder('id')" class="btn btn-link p-0">
+          {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+        </button>
+        <button *ngIf="sortBy === 'username'" (click)="toggleSortOrder('username')" class="btn btn-link p-0">
+          {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+        </button>
+        <button *ngIf="sortBy === 'dateCreated'" (click)="toggleSortOrder('dateCreated')" class="btn btn-link p-0">
+          {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+        </button>
+      </span>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <input 
+      type="text" 
+      class="form-control" 
+      placeholder="Search..." 
+      [(ngModel)]="searchTerm" 
+      (ngModelChange)="onSearchChange($event)"
+    />
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Date Created</th>
+        <th>Text</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let post of paginatedBlogPosts">
+        <td>{{ post.id }}</td>
+        <td>{{ post.username }}</td>
+        <td>{{ post.dateCreated | date }}</td>
+        <td>{{ post.text }}</td>
+        <td>
+          <a [routerLink]="['/edit', post.id]" class="btn btn-primary btn-sm me-2">Edit</a>
+          <button (click)="deletePost(post.id)" class="btn btn-danger btn-sm">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <nav *ngIf="totalPages > 1">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
+        <a class="page-link" (click)="changePage(1)">First</a>
+      </li>
+      <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
+        <a class="page-link" (click)="changePage(currentPage - 1)">Previous</a>
+      </li>
+      <li class="page-item" *ngFor="let page of pages">
+        <a class="page-link" (click)="changePage(page)" [ngClass]="{'active': currentPage === page}">{{ page }}</a>
+      </li>
+      <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages}">
+        <a class="page-link" (click)="changePage(currentPage + 1)">Next</a>
+      </li>
+      <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages}">
+        <a class="page-link" (click)="changePage(totalPages)">Last</a>
+      </li>
+    </ul>
+  </nav>
+</div>
